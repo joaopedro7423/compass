@@ -15,11 +15,11 @@ import UserRepositoryGit from "./components/UserRepositoryGit";
 import { githubUser } from "./interfaces/githubUser";
 import { reposUser } from "./interfaces/reposUser";
 import { resposStarred } from "./interfaces/resposStarred";
+import { StarredRepositoryGit } from "./components/StarredRepositoryGit";
 
 export default function App() {
   const [user, userSet] = useState<githubUser>();
   const [reposi, repoSet] = useState<reposUser[]>([]);
-  const [starreds, starreSet] = useState<resposStarred[]>([]);
   const [userName, userNameSet] = useState<string>("");
 
   async function userHub(username: any) {
@@ -47,17 +47,6 @@ export default function App() {
     }
   }
 
-  async function userStarred() {
-    try {
-      const response = await api.get<resposStarred[]>(
-        `/users/${userName}/starred?client_id=${dataApi.client_id}&client_secret=${dataApi.client_secret}`
-      );
-
-      starreSet(response.data);
-    } catch (err: any) {
-      alert(err.response.data.message);
-    }
-  }
   const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -83,7 +72,7 @@ export default function App() {
       </Container>
       <br />
       <div className="justify-content-center align-itens-center d-flex">
-        <Card style={{ width: "18rem" }}>
+        <Card style={{ width: "20rem" }}>
           <Card.Img variant="top" src={user?.avatar_url} />
           <Card.Body>
             <Card.Title>{user?.name}</Card.Title>
@@ -92,25 +81,14 @@ export default function App() {
               className="justify-content-center"
               direction="horizontal"
               gap={3}
-            >
-              <Button onClick={userStarred} variant="primary">
-                Starred
-              </Button>
-            </Stack>{" "}
+            ></Stack>{" "}
           </Card.Body>
         </Card>
       </div>
       <Container>
         <Row className="justify-content-between">
           <UserRepositoryGit nameUser={userName} />
-          <Col md="auto" className="justify-content-center">
-            <h3>Starred</h3>{" "}
-            {starreds?.map((starred, i) => (
-              <>
-                <li key={i}>{starred?.name}</li>
-              </>
-            ))}
-          </Col>
+          <StarredRepositoryGit nameUser={userName} />
         </Row>
       </Container>
     </>

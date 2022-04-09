@@ -25,7 +25,7 @@ export default function UserRepositoryGit({ nameUser }: props) {
     <Col md={4}>
       {" "}
       <h3>Repositorios</h3>
-      <Button onClick={userRepo} variant="primary">
+      <Button className="w-100" onClick={userRepo} variant="primary">
         Repos
       </Button>
       {reposi?.map((repo, i) => (
