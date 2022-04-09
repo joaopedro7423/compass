@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./App.css";
-import { Button, Card, Form, Stack } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  Row,
+  Stack,
+  Toast,
+} from "react-bootstrap";
 
 const api = {
   baseUrl: "https://api.github.com",
-  client_id: "4d5a9733c9cdfa78abf5",
-  client_secret: "e015583a2102d84217169324035347b8933c5dd2",
+  client_id: "716b1c2ab83566d8f2c7",
+  client_secret: "1e8b023270f398ac502b074832221166b21e04d6 ",
 };
 
 interface githubUser {
@@ -250,43 +258,73 @@ interface resposStarred {
 
 export default function App() {
   const [user, userSet] = useState<githubUser>();
-  const [repos, repoSet] = useState<reposUser[]>([]);
+  const [reposi, repoSet] = useState<reposUser[]>([]);
   const [starreds, starreSet] = useState<resposStarred[]>([]);
+  const [userName, userNameSet] = useState<string>("");
 
-  useEffect(() => {
-    async function userHub() {
+  async function userHub(username: any) {
+    try {
       const response = await axios.get<githubUser>(
-        api.baseUrl + "/users/joaopedro7423"
+        api.baseUrl +
+          `/users/${username}?client_id=${api.client_id}&client_secret=${api.client_secret}`
       );
       userSet(response.data);
+    } catch (err: any) {
+      console.log();
+      alert(err.response.data.message);
     }
-
-    userHub();
-  }, []);
+  }
 
   async function userRepo() {
-    const response = await axios.get<reposUser[]>(
-      api.baseUrl + "/users/joaopedro7423/repos"
-    );
-
-    repoSet(response.data);
+    try {
+      const response = await axios.get<reposUser[]>(
+        api.baseUrl +
+          `/users/${userName}/repos?client_id=${api.client_id}&client_secret=${api.client_secret}`
+      );
+      repoSet(response.data);
+    } catch (e) {
+      console.log(e);
+      alert(e);
+    }
   }
 
   async function userStarred() {
     const response = await axios.get<resposStarred[]>(
-      api.baseUrl + "/users/joaopedro7423/starred"
+      api.baseUrl +
+        `/users/${userName}/starred?client_id=${api.client_id}&client_secret=${api.client_secret}`
     );
 
     starreSet(response.data);
   }
+  const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
+    // Preventing the page from reloading
+
+    event.preventDefault();
+    // Do something
+
+    console.log(userName);
+    userHub(userName);
+  };
 
   return (
     <>
-      <Form.Control
-        className="me-auto m-auto p-2"
-        placeholder="Add your item here..."
-      />
-      <div className="App justify-content-center align-itens-center d-flex">
+      <Container>
+        <Form onSubmit={submitForm} className="rounded">
+          <Form.Group className="mb-3" controlId="formUserGit">
+            <Form.Label isRequire>Informe um usuário do github:</Form.Label>
+            <Form.Control
+              onChange={(e) => userNameSet(e.target.value)}
+              className="p-2"
+              placeholder="Ex: joaopedro7423"
+            />
+          </Form.Group>
+          <Button type="submit" className="w-100">
+            Pesquisar
+          </Button>
+        </Form>
+      </Container>
+      <br />
+      <div className="justify-content-center align-itens-center d-flex">
         <Card style={{ width: "18rem" }}>
           <Card.Img variant="top" src={user?.avatar_url} />
           <Card.Body>
@@ -308,17 +346,25 @@ export default function App() {
           </Card.Body>
         </Card>
       </div>
-      {repos?.map((repo, i) => (
-        <>
-          <p key={i}>{repo?.name}</p>
-        </>
-      ))}
-
-      {starreds?.map((starred, i) => (
-        <>
-          <p key={i}>{starred?.name}</p>
-        </>
-      ))}
+      <Container>
+        <Row className="justify-content-between">
+          <Col md={4}>
+            {" "}
+            <h3>Repositorios</h3>
+            {reposi?.map((repo, i) => (
+              <li key={i}>{repo?.name}</li>
+            ))}
+          </Col>
+          <Col md="auto" className="justify-content-center">
+            <h3>Starred</h3>{" "}
+            {starreds?.map((starred, i) => (
+              <>
+                <li key={i}>{starred?.name}</li>
+              </>
+            ))}
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 }
