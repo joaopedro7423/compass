@@ -7,9 +7,11 @@ interface props {
   nameUser: string;
 }
 
+//componente que recebe o nome do usuário como props
 export default function UserRepositoryGit({ nameUser }: props) {
-  const [reposi, repoSet] = useState<reposUser[]>([]);
+  const [reposi, repoSet] = useState<reposUser[]>([]); //seta para apresentar os repositorios do usuario
 
+  //função para buscar os repositorios do usuário
   async function userRepo() {
     try {
       const response = await api.get<reposUser[]>(
@@ -17,11 +19,12 @@ export default function UserRepositoryGit({ nameUser }: props) {
       );
       repoSet(response.data);
     } catch (err: any) {
-      console.log(err);
+      //mensagem de erro caso ocorra
       alert(err.response.data.message);
     }
   }
   return (
+    //componente do tipo coluna para integrar o row da página principal
     <Col md={4}>
       {" "}
       <h3>Repositorios</h3>

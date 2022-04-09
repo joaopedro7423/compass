@@ -1,27 +1,15 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import {
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  Row,
-  Stack,
-  Toast,
-} from "react-bootstrap";
+import { useState } from "react";
+import { Button, Card, Container, Form, Row, Stack } from "react-bootstrap";
 import { api, dataApi } from "./Services/api";
 import UserRepositoryGit from "./components/UserRepositoryGit";
 import { githubUser } from "./interfaces/IGithubUser";
-import { reposUser } from "./interfaces/IReposUser";
-import { resposStarred } from "./interfaces/IResposStarred";
 import { StarredRepositoryGit } from "./components/StarredRepositoryGit";
 
 export default function App() {
-  const [user, userSet] = useState<githubUser>();
-  const [reposi, repoSet] = useState<reposUser[]>([]);
-  const [userName, userNameSet] = useState<string>("");
+  const [user, userSet] = useState<githubUser>(); //seta para apresentar o usuario ao card
+  const [userName, userNameSet] = useState<string>(""); //seta as info do usuario
 
+  //função para buscar o usuario
   async function userHub(username: any) {
     try {
       const response = await api.get<githubUser>(
@@ -34,44 +22,33 @@ export default function App() {
     }
   }
 
-  async function userRepo() {
-    try {
-      const response = await api.get<reposUser[]>(
-        `/users/${userName}/repos?client_id=${dataApi.client_id}&client_secret=${dataApi.client_secret}`
-      );
-
-      repoSet(response.data);
-    } catch (err: any) {
-      console.log(err);
-      alert(err.response.data.message);
-    }
-  }
-
+  //recebe o usuario digitado no input
   const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    //envoca a função a cima
     userHub(userName);
   };
 
   return (
-    <>
-      <Container>
-        <Form onSubmit={submitForm} className="rounded">
-          <Form.Group className="mb-3" controlId="formUserGit">
-            <Form.Label>Informe um usuário do github:</Form.Label>
-            <Form.Control
-              onChange={(e) => userNameSet(e.target.value)}
-              className="p-2"
-              placeholder="Ex: joaopedro7423"
-            />
-          </Form.Group>
-          <Button type="submit" className="w-100">
-            Pesquisar
-          </Button>
-        </Form>
-      </Container>
+    <Container>
+      {/* formulario para recolher o usuário */}
+      <Form onSubmit={submitForm} className="rounded">
+        <Form.Group className="mb-3" controlId="formUserGit">
+          <Form.Label>Informe um usuário do github:</Form.Label>
+          <Form.Control
+            onChange={(e) => userNameSet(e.target.value)}
+            className="p-2"
+            placeholder="Ex: joaopedro7423"
+          />
+        </Form.Group>
+        <Button type="submit" className="w-100">
+          Pesquisar
+        </Button>
+      </Form>
       <br />
       <div className="justify-content-center align-itens-center d-flex">
+        {/* card para apresentar o usuário */}
         <Card style={{ width: "20rem" }}>
           <Card.Img variant="top" src={user?.avatar_url} />
           <Card.Body>
@@ -85,12 +62,13 @@ export default function App() {
           </Card.Body>
         </Card>
       </div>
-      <Container>
-        <Row className="justify-content-between">
-          <UserRepositoryGit nameUser={userName} />
-          <StarredRepositoryGit nameUser={userName} />
-        </Row>
-      </Container>
-    </>
+
+      <Row className="justify-content-between">
+        {/* List para apresentar os repositorios do usuário */}
+        <UserRepositoryGit nameUser={userName} />
+        {/* List para apresentar os repositorios que o usuário está seguindo */}
+        <StarredRepositoryGit nameUser={userName} />
+      </Row>
+    </Container>
   );
 }
