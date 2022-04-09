@@ -311,7 +311,7 @@ export default function App() {
       <Container>
         <Form onSubmit={submitForm} className="rounded">
           <Form.Group className="mb-3" controlId="formUserGit">
-            <Form.Label isRequire>Informe um usuário do github:</Form.Label>
+            <Form.Label>Informe um usuário do github:</Form.Label>
             <Form.Control
               onChange={(e) => userNameSet(e.target.value)}
               className="p-2"
