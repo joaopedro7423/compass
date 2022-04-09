@@ -10,12 +10,7 @@ import {
   Stack,
   Toast,
 } from "react-bootstrap";
-
-const api = {
-  baseUrl: "https://api.github.com",
-  client_id: "716b1c2ab83566d8f2c7",
-  client_secret: "1e8b023270f398ac502b074832221166b21e04d6 ",
-};
+import { api, dataApi } from "./Services/api";
 
 interface githubUser {
   avatar_url: string;
@@ -264,9 +259,8 @@ export default function App() {
 
   async function userHub(username: any) {
     try {
-      const response = await axios.get<githubUser>(
-        api.baseUrl +
-          `/users/${username}?client_id=${api.client_id}&client_secret=${api.client_secret}`
+      const response = await api.get<githubUser>(
+        `/users/${username}?client_id=${dataApi.client_id}&client_secret=${dataApi.client_secret}`
       );
       userSet(response.data);
     } catch (err: any) {
@@ -277,32 +271,30 @@ export default function App() {
 
   async function userRepo() {
     try {
-      const response = await axios.get<reposUser[]>(
-        api.baseUrl +
-          `/users/${userName}/repos?client_id=${api.client_id}&client_secret=${api.client_secret}`
+      const response = await api.get<reposUser[]>(
+        `/users/${userName}/repos?client_id=${dataApi.client_id}&client_secret=${dataApi.client_secret}`
       );
       repoSet(response.data);
-    } catch (e) {
-      console.log(e);
-      alert(e);
+    } catch (err: any) {
+      console.log(err);
+      alert(err.response.data.message);
     }
   }
 
   async function userStarred() {
-    const response = await axios.get<resposStarred[]>(
-      api.baseUrl +
-        `/users/${userName}/starred?client_id=${api.client_id}&client_secret=${api.client_secret}`
-    );
+    try {
+      const response = await api.get<resposStarred[]>(
+        `/users/${userName}/starred?client_id=${dataApi.client_id}&client_secret=${dataApi.client_secret}`
+      );
 
-    starreSet(response.data);
+      starreSet(response.data);
+    } catch (err: any) {
+      alert(err.response.data.message);
+    }
   }
   const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
-    // Preventing the page from reloading
-
     event.preventDefault();
-    // Do something
 
-    console.log(userName);
     userHub(userName);
   };
 
