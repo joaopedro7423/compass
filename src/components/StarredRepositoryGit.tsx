@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Col } from "react-bootstrap";
-import { resposStarred } from "../interfaces/resposStarred";
+import { resposStarred } from "../interfaces/IResposStarred";
 import { api, dataApi } from "../Services/api";
 
 interface props {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Col } from "react-bootstrap";
-import { reposUser } from "../interfaces/reposUser";
+import { reposUser } from "../interfaces/IReposUser";
 import { api, dataApi } from "../Services/api";
 
 interface props {

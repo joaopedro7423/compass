@@ -12,9 +12,9 @@ import {
 } from "react-bootstrap";
 import { api, dataApi } from "./Services/api";
 import UserRepositoryGit from "./components/UserRepositoryGit";
-import { githubUser } from "./interfaces/githubUser";
-import { reposUser } from "./interfaces/reposUser";
-import { resposStarred } from "./interfaces/resposStarred";
+import { githubUser } from "./interfaces/IGithubUser";
+import { reposUser } from "./interfaces/IReposUser";
+import { resposStarred } from "./interfaces/IResposStarred";
 import { StarredRepositoryGit } from "./components/StarredRepositoryGit";
 
 export default function App() {
